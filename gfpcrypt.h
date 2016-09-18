@@ -238,7 +238,7 @@ public:
 		r %= q;
 		Integer kInv = k.InverseMod(q);
 		s = (kInv * (x*r + e)) % q;
-		assert(!!r && !!s);
+		CRYPTOPP_ASSERT(!!r && !!s);
 	}
 
 	bool Verify(const DL_GroupParameters<T> &params, const DL_PublicKey<T> &publicKey, const Integer &e, const Integer &r, const Integer &s) const
