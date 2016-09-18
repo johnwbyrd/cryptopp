@@ -107,8 +107,8 @@ void DL_SignatureMessageEncodingMethod_RFC6979::ComputeMessageRepresentative(Ran
 {
 	CRYPTOPP_UNUSED(rng), CRYPTOPP_UNUSED(recoverableMessage), CRYPTOPP_UNUSED(recoverableMessageLength);
 	CRYPTOPP_UNUSED(messageEmpty), CRYPTOPP_UNUSED(hashIdentifier);
-	assert(recoverableMessageLength == 0);
-	assert(hashIdentifier.second == 0);
+	CRYPTOPP_ASSERT(recoverableMessageLength == 0);
+	CRYPTOPP_ASSERT(hashIdentifier.second == 0);
 
 	const size_t representativeByteLength = BitsToBytes(representativeBitLength);
 	const size_t digestSize = hash.DigestSize();
