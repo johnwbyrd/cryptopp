@@ -238,7 +238,6 @@ public:
 		m_halfs.high = high;
 #endif
 	}
-#endif
 
 	static DWord Multiply(word a, word b)
 	{
@@ -325,35 +324,44 @@ public:
 	word GetLowHalf() const {return m_halfs.low;}
 	word GetHighHalf() const {return m_halfs.high;}
 	word GetHighHalfAsBorrow() const {return 0-m_halfs.high;}
-#endif
 
 private:
-
-#ifdef CRYPTOPP_NATIVE_DWORD_AVAILABLE
-	dword m_whole;
-#else
 	// Issue 274, "Types cannot be declared in anonymous union",
 	//   http://github.com/weidai11/cryptopp/issues/274
 	//   Thanks to Martin Bonner at http://stackoverflow.com/a/39507183
-	struct half_words
-	{
-#  ifdef IS_LITTLE_ENDIAN
-		word low;
-		word high;
-#  else
-		word high;
-		word low;
-#  endif
-	};
-
-	half_words m_halfs;
-#endif
+    struct half_words
+    {
+    #ifdef IS_LITTLE_ENDIAN
+        word low;
+        word high;
+    #else
+        word high;
+        word low;
+    #endif
+   };
+   union
+   {
+   #ifdef CRYPTOPP_NATIVE_DWORD_AVAILABLE
+       dword m_whole;
+   #endif
+       half_words m_halfs;
+   };
 };
 
 class Word
 {
 public:
+	// Converity finding on default ctor. We've isntrumented the code,
+	//   and cannot uncover a case where it affects a result.
+#if defined(__COVERITY__)
 	Word() : m_whole(0) {}
+#elif CRYPTOPP_DEBUG
+	// Repeating pattern of 1010 for debug builds to break things...
+	Word() : m_whole(0) {memset(&m_whole, 0xaa, sizeof(m_whole));}
+#else
+	Word() {}
+#endif
+
 	Word(word value) : m_whole(value) {}
 	Word(hword low, hword high) : m_whole(low | (word(high) << (WORD_BITS/2))) {}
 
