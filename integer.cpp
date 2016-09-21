@@ -205,37 +205,38 @@ class DWord
 {
 public:
 #if defined(CRYPTOPP_NATIVE_DWORD_AVAILABLE)
-	DWord() : m_whole(0) { }
+	DWord() : m_whole() { }
 #else
-	DWord() { m_halfs.high = 0; m_halfs.low=0; }
+	DWord() : m_halfs() { }
 #endif
 
 #ifdef CRYPTOPP_NATIVE_DWORD_AVAILABLE
-	explicit DWord(word low) : m_whole(low) {}
+	explicit DWord(word low) : m_whole(low) { }
 #else
-	explicit DWord(word low)
+	explicit DWord(word low) : m_halfs()
 	{
 		m_halfs.low = low;
-		m_halfs.high = 0;
 	}
 #endif
 
-#ifdef CRYPTOPP_NATIVE_DWORD_AVAILABLE
-	DWord(word low, word high)
-	{
-# if defined(IS_LITTLE_ENDIAN)
-		*(reinterpret_cast<word*>(&m_whole)+0) = low;
-		*(reinterpret_cast<word*>(&m_whole)+1) = high;
-# else
-		*(reinterpret_cast<word*>(&m_whole)+1) = low;
-		*(reinterpret_cast<word*>(&m_whole)+0) = high;
-# endif
-	}
+#if defined(CRYPTOPP_NATIVE_DWORD_AVAILABLE)
+	DWord(word low, word high) : m_whole()
 #else
-	DWord(word low, word high)
+	DWord(word low, word high) : m_halfs()
+#endif
 	{
+#if defined(CRYPTOPP_NATIVE_DWORD_AVAILABLE)
+#  if defined(IS_LITTLE_ENDIAN)
+		const word t[2] = {low,high};
+		memcpy(&m_whole, &t, sizeof(m_whole));
+#  else
+		const word t[2] = {high,low};
+		memcpy(&m_whole, &t, sizeof(m_whole));
+#  endif
+#else
 		m_halfs.low = low;
 		m_halfs.high = high;
+#endif
 	}
 #endif
 
@@ -319,19 +320,8 @@ public:
 	#endif
 	}
 
-#ifdef CRYPTOPP_NATIVE_DWORD_AVAILABLE
-
-#if defined(IS_LITTLE_ENDIAN)
-	word GetLowHalf() const {return *(reinterpret_cast<const word*>(&m_whole)+0);}
-	word GetHighHalf() const {return *(reinterpret_cast<const word*>(&m_whole)+1);}
-	word GetHighHalfAsBorrow() const {return 0-GetHighHalf();}
-# else
-	word GetLowHalf() const {return *(reinterpret_cast<const word*>(&m_whole)+1);}
-	word GetHighHalf() const {return *(reinterpret_cast<const word*>(&m_whole)+0);}
-	word GetHighHalfAsBorrow() const {return 0-GetHighHalf();}
-#endif
-
-#else
+	// TODO: When NATIVE_DWORD is in effect, we access high and low, which are inactive
+	//  union members, and that's UB. Also see http://stackoverflow.com/q/11373203.
 	word GetLowHalf() const {return m_halfs.low;}
 	word GetHighHalf() const {return m_halfs.high;}
 	word GetHighHalfAsBorrow() const {return 0-m_halfs.high;}
