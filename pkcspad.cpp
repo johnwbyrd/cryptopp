@@ -12,7 +12,7 @@
 
 NAMESPACE_BEGIN(CryptoPP)
 
-// More in dll.cpp
+// More in dll.cpp. Typedef/cast change due to Clang, http://github.com/weidai11/cryptopp/issues/300
 template<> const byte PKCS_DigestDecoration<Weak1::MD2>::decoration[] = {0x30,0x20,0x30,0x0c,0x06,0x08,0x2a,0x86,0x48,0x86,0xf7,0x0d,0x02,0x02,0x05,0x00,0x04,0x10};
 template<> const unsigned int PKCS_DigestDecoration<Weak1::MD2>::length = (unsigned int)sizeof(PKCS_DigestDecoration<Weak1::MD2>::decoration);
 
@@ -25,6 +25,7 @@ template<> const unsigned int PKCS_DigestDecoration<RIPEMD160>::length = (unsign
 template<> const byte PKCS_DigestDecoration<Tiger>::decoration[] = {0x30,0x29,0x30,0x0D,0x06,0x09,0x2B,0x06,0x01,0x04,0x01,0xDA,0x47,0x0C,0x02,0x05,0x00,0x04,0x18};
 template<> const unsigned int PKCS_DigestDecoration<Tiger>::length = (unsigned int)sizeof(PKCS_DigestDecoration<Tiger>::decoration);
 
+// Inclusion based on DLL due to Clang, http://github.com/weidai11/cryptopp/issues/300
 #ifndef CRYPTOPP_IS_DLL
 template<> const byte PKCS_DigestDecoration<SHA1>::decoration[] = {0x30,0x21,0x30,0x09,0x06,0x05,0x2B,0x0E,0x03,0x02,0x1A,0x05,0x00,0x04,0x14};
 template<> const unsigned int PKCS_DigestDecoration<SHA1>::length = (unsigned int)sizeof(PKCS_DigestDecoration<SHA1>::decoration);
