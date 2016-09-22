@@ -36,12 +36,12 @@ public:
 // PKCS_DigestDecoration can be instantiated with the following
 // classes as specified in PKCS#1 v2.0 and P1363a
 class SHA1;
-class RIPEMD160;
-class Tiger;
 class SHA224;
 class SHA256;
 class SHA384;
 class SHA512;
+class Tiger;
+class RIPEMD160;
 namespace Weak1 {
 class MD2;
 class MD5;
@@ -76,7 +76,7 @@ public:
 		{
 			static HashIdentifier Lookup()
 			{
-				return HashIdentifier(PKCS_DigestDecoration<H>::decoration, (size_t)PKCS_DigestDecoration<H>::length);
+				return HashIdentifier(PKCS_DigestDecoration<H>::decoration, PKCS_DigestDecoration<H>::length);
 			}
 		};
 	};

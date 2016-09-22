@@ -23,6 +23,7 @@
 
 NAMESPACE_BEGIN(CryptoPP)
 
+#if CRYPTOPP_IS_DLL
 template<> const byte PKCS_DigestDecoration<SHA1>::decoration[] = {0x30,0x21,0x30,0x09,0x06,0x05,0x2B,0x0E,0x03,0x02,0x1A,0x05,0x00,0x04,0x14};
 template<> const unsigned int PKCS_DigestDecoration<SHA1>::length = sizeof(PKCS_DigestDecoration<SHA1>::decoration);
 
@@ -43,6 +44,8 @@ template<> const byte EMSA2HashId<SHA224>::id = 0x38;
 template<> const byte EMSA2HashId<SHA256>::id = 0x34;
 template<> const byte EMSA2HashId<SHA384>::id = 0x36;
 template<> const byte EMSA2HashId<SHA512>::id = 0x35;
+
+#endif	// CRYPTOPP_IS_DLL
 
 NAMESPACE_END
 
